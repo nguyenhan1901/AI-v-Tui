@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bạn với AI: Đang ở mức nào?</title>
+  <style>
+    :root {
+      --primary: #1d4ed8;
+      --primary-light: #eff6ff;
+      --bg: #f0f7ff;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, #dbeafe 0%, var(--bg) 35%, #f8fafc 100%);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px 14px 48px;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .hero {
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      color: #fff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.18);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+    }
+
+    .badges {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      color: #e0e7ff;
+    }
+
+    /* Sticky Score Bar */
+    .score-bar {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+    }
+
+    .score-info {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 0.95rem;
+    }
+
+    .score-info strong {
+      color: var(--primary);
+      font-size: 1.15rem;
+    }
+
+    .progress-wrap {
+      flex: 1;
+      min-width: 140px;
+      max-width: 240px;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width 0.25s ease;
+    }
+
+    /* Card */
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 22px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+      margin-bottom: 20px;
+    }
+
+    .scale-legend {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .scale-item {
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 8px 6px;
+      font-size: 0.82rem;
+    }
+
+    .scale-item b {
+      display: block;
+      font-size: 1rem;
+      color: var(--primary);
+    }
+
+    /* Questions */
+    .q-item {
+      padding: 16px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .q-item:last-child {
+      border-bottom: none;
+      padding-bottom: 4px;
+    }
+
+    .q-title {
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 0.98rem;
+    }
+
+    .q-num {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 6px;
+      margin-right: 6px;
+      font-size: 0.85rem;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .opt-btn {
+      border: 1.5px solid var(--border);
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+
+    .opt-btn:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+
+    .opt-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+
+    .opt-btn span {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, opacity 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    /* Result Box - 5 Levels */
+    .result-box {
+      display: none;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 22px;
+      border: 2px solid transparent;
+    }
+
+    .result-box.lvl1 {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #14532d;
+    }
+
+    .result-box.lvl2 {
+      background: #e0f2fe;
+      border-color: #7dd3fc;
+      color: #0c4a6e;
+    }
+
+    .result-box.lvl3 {
+      background: #fef9c3;
+      border-color: #fde047;
+      color: #713f12;
+    }
+
+    .result-box.lvl4 {
+      background: #ffedd5;
+      border-color: #fdba74;
+      color: #7c2d12;
+    }
+
+    .result-box.lvl5 {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #7f1d1d;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .result-score {
+      font-size: 1.45rem;
+      font-weight: 800;
+    }
+
+    .result-tag {
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Guide Section */
+    .guide-title {
+      text-align: center;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #dc2626;
+      margin-bottom: 16px;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .guide-col {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .grade-pill {
+      display: inline-block;
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      color: #b45309;
+      font-weight: 800;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+    }
+
+    .guide-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .guide-col li strong {
+      color: #0f172a;
+    }
+
+    /* QR Box */
+    .qr-section {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dashed #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .qr-section img {
+      width: 110px;
+      height: 110px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 4px;
+      background: #fff;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .scale-legend {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .options {
+        grid-template-columns: 1fr;
+      }
+      .opt-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+      }
+      .opt-btn span {
+        margin-bottom: 0;
+      }
+      .guide-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Đầu trang -->
+    <div class="hero">
+      <h1>BẠN VỚI AI: ĐANG Ở MỨC NÀO?</h1>
+      <div class="badges">
+        <span class="badge">⏱ Khoảng 2 phút</span>
+        <span class="badge">🔒 Ẩn danh hoàn toàn</span>
+        <span class="badge">🎓 Học sinh khối 8–12</span>
+      </div>
+      <p>
+        Nhiều bạn dùng AI để học bài, tìm ý tưởng và đôi khi để tâm sự khi có chuyện buồn hay cần lời hồi đáp nhanh. 
+        Bài test nhỏ này giúp bạn nhìn lại thói quen trò chuyện với AI một cách nhẹ nhàng, tự nhiên — không chấm điểm để đánh giá, chỉ để bạn hiểu rõ chính mình.
+      </p>
+    </div>
+
+    <!-- Thanh điểm trực tiếp -->
+    <div class="score-bar">
+      <div class="score-info">
+        <div>Điểm hiện tại: <strong id="liveScore">0</strong> / 40</div>
+        <div>Đã chọn: <strong id="answeredCount">0</strong> / 8</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thang mức độ -->
+    <div class="card">
+      <strong>THANG MỨC ĐỘ (1 ĐẾN 5)</strong>
+      <div class="scale-legend">
+        <div class="scale-item"><b>1 điểm</b>Chưa bao giờ</div>
+        <div class="scale-item"><b>2 điểm</b>Hiếm khi</div>
+        <div class="scale-item"><b>3 điểm</b>Thỉnh thoảng</div>
+        <div class="scale-item"><b>4 điểm</b>Thường xuyên</div>
+        <div class="scale-item"><b>5 điểm</b>Gần như lúc nào cũng vậy</div>
+      </div>
+    </div>
+
+    <!-- Danh sách 8 câu hỏi -->
+    <div class="card" id="quizContainer"></div>
+
+    <!-- Nút điều khiển -->
+    <div class="actions">
+      <button class="btn btn-primary" onclick="showResult()">Xem kết quả của bạn</button>
+      <button class="btn btn-secondary" onclick="resetQuiz()">Làm lại từ đầu</button>
+    </div>
+
+    <!-- Khung kết quả (5 mức) -->
+    <div class="result-box" id="resultBox" style="margin-top: 20px;">
+      <div class="result-header">
+        <div class="result-score" id="finalScoreText">0 / 40 điểm</div>
+        <div class="result-tag" id="levelTag">Mức độ</div>
+      </div>
+      <p id="resultDesc"></p>
+    </div>
+
+    <!-- Trang 2: Cẩm nang định hướng -->
+    <div class="card" style="margin-top: 24px;">
+      <h2 class="guide-title">Cẩm nang sử dụng AI an toàn về cảm xúc</h2>
+      <div class="guide-grid">
+        <div class="guide-col">
+          <div class="grade-pill">Khối 8–9 (THCS)</div>
+          <ul>
+            <li>
+              <strong>1. Nhận diện đúng về AI:</strong> Lời an ủi hay khen ngợi của AI được tạo ra từ thuật toán dự đoán câu chữ để giữ chân người dùng, không phải sự thấu hiểu hay tình cảm thật sự.
+            </li>
+            <li>
+              <strong>2. Không lấy AI thay thế bạn bè:</strong> Chỉ coi AI là công cụ hỗ trợ học tập và tìm ý tưởng; không chia sẻ bí mật cá nhân nhạy cảm hay tâm sự chuyện riêng tư quá sâu với AI.
+            </li>
+            <li>
+              <strong>3. Ưu tiên giao tiếp trực tiếp:</strong> Khi gặp chuyện buồn ở trường lớp, hãy thử chia sẻ với bạn thân, người nhà hoặc thầy cô trước thay vì tìm đến màn hình.
+            </li>
+          </ul>
+        </div>
+
+        <div class="guide-col">
+          <div class="grade-pill">Khối 10–12 (THPT)</div>
+          <ul>
+            <li>
+              <strong>1. Áp dụng “Quy tắc 30 phút” cho trò chuyện ngoài học tập:</strong> Giới hạn thời gian tâm sự/trò chuyện phi học tập với AI khoảng 30 phút/ngày.
+            </li>
+            <li>
+              <strong>2. Giải tỏa áp lực học tập theo hướng lành mạnh:</strong> Khi quá tải vì điểm số, kỳ vọng hay chọn ngành, hãy thử nghỉ giải lao, đi bộ, vận động nhẹ, viết ra giấy điều khiến bạn lo lắng hoặc chia nhỏ mục tiêu.
+            </li>
+            <li>
+              <strong>3. Nuôi dưỡng kết nối đời thực bền vững:</strong> Nên trò chuyện trực tiếp nhiều hơn. Đừng ngại mở lời trước dù chỉ là một câu hỏi thăm ngắn.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qr-section">
+        <div>
+          <strong>Làm trực tuyến tại đây &rarr;</strong>
+          <p style="font-size: 0.85rem; color: var(--muted);">Quét mã QR bên cạnh để làm bài test nhanh trên điện thoại.</p>
+        </div>
+        <img 
+          src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://baohangianghuynh-spec.github.io/AI/" 
+          alt="Mã QR bài test" 
+        />
+      </div>
+    </div>
+
+    <p class="footer-note">
+      Lưu ý: Kết quả chỉ mang tính chất tự tham khảo phục vụ nghiên cứu khoa học học sinh, không thay thế chẩn đoán hay tư vấn tâm lý chuyên môn. Câu trả lời không lưu lên máy chủ.
+    </p>
+  </div>
+
+  <script>
+    const questions = [
+      "Khi thấy buồn, mình thường nhắn cho AI trước vì thấy đỡ ngại hơn nhắn cho người quen.",
+      "Đọc cách AI trả lời, mình thấy nó \"hiểu ý\" và nhẹ nhàng y như nói chuyện với người bạn thật.",
+      "Lúc mệt hay lười mở lời, trò chuyện với AI làm mình thấy dễ chịu hơn nói chuyện mặt đối mặt.",
+      "Ngoài chuyện học hay tìm kiếm thông tin, mình hay vào tâm sự với AI.",
+      "Có những lúc định rủ bạn hoặc ngồi nói chuyện với gia đình, mình lại chọn ở lại trò chuyện với AI.",
+      "Đang nhắn dở mà rớt mạng, hết lượt hoặc app lỗi, mình thấy hụt hẫng, bứt rứt, khó chịu.",
+      "Nếu bảo dừng hẳn việc tâm sự với AI trong vài ngày tới, mình thấy khó chịu hoặc khó bắt đầu.",
+      "Đôi lúc mình nói chuyện hoặc phản ứng với AI như thể nó có cảm xúc riêng chứ không chỉ là một phần mềm."
+    ];
+
+    const scaleLabels = [
+      "Chưa bao giờ",
+      "Hiếm khi",
+      "Thỉnh thoảng",
+      "Thường xuyên",
+      "Gần như lúc nào cũng vậy"
+    ];
+
+    const answers = new Array(questions.length).fill(0);
+
+    function renderQuiz() {
+      const container = document.getElementById("quizContainer");
+      container.innerHTML = questions
+        .map((q, qIdx) => {
+          const btns = [1, 2, 3, 4, 5]
+            .map(
+              (val) => `
+              <button type="button" class="opt-btn ${answers[qIdx] === val ? "active" : ""}" 
+                onclick="selectOption(${qIdx}, ${val})">
+                <span>${val}</span>${scaleLabels[val - 1]}
+              </button>`
+            )
+            .join("");
+
+          return `
+            <div class="q-item">
+              <div class="q-title"><span class="q-num">Câu ${qIdx + 1}</span>${q}</div>
+              <div class="options">${btns}</div>
+            </div>`;
+        })
+        .join("");
+    }
+
+    function selectOption(qIdx, val) {
+      answers[qIdx] = val;
+      updateLiveScore();
+      renderQuiz();
+    }
+
+    function updateLiveScore() {
+      const total = answers.reduce((sum, v) => sum + v, 0);
+      const answered = answers.filter((v) => v > 0).length;
+      document.getElementById("liveScore").textContent = total;
+      document.getElementById("answeredCount").textContent = answered;
+      document.getElementById("progressFill").style.width = `${(answered / questions.length) * 100}%`;
+    }
+
+    function showResult() {
+      const unanswered = answers.filter((v) => v === 0).length;
+      if (unanswered > 0) {
+        alert(`Bạn còn ${unanswered} câu chưa chọn. Hãy chọn đủ 8 câu để xem kết quả chính xác nhé!`);
+        return;
+      }
+
+      const total = answers.reduce((sum, v) => sum + v, 0);
+      const avg = (total / questions.length).toFixed(2);
+      const box = document.getElementById("resultBox");
+      const scoreText = document.getElementById("finalScoreText");
+      const tag = document.getElementById("levelTag");
+      const desc = document.getElementById("resultDesc");
+
+      box.className = "result-box";
+      scoreText.textContent = `${total} / 40 điểm (TB: ${avg}/5.00)`;
+
+      if (total <= 14) {
+        box.classList.add("lvl1");
+        tag.textContent = "Mức 1: Rất thấp (8–14 điểm)";
+        desc.textContent =
+          "Bạn sử dụng AI hoàn toàn như một công cụ hỗ trợ học tập và tra cứu, không có biểu hiện gắn kết hay phụ thuộc cảm xúc. Hãy tiếp tục duy trì sự chủ động này nhé!";
+      } else if (total <= 20) {
+        box.classList.add("lvl2");
+        tag.textContent = "Mức 2: Thấp (15–20 điểm)";
+        desc.textContent =
+          "Bạn giữ được ranh giới khá cân bằng giữa AI và đời sống thực. Thỉnh thoảng bạn có trò chuyện giải trí với AI nhưng vẫn ưu tiên các mối quan hệ xung quanh.";
+      } else if (total <= 27) {
+        box.classList.add("lvl3");
+        tag.textContent = "Mức 3: Trung bình (21–27 điểm)";
+        desc.textContent =
+          "Bạn bắt đầu có xu hướng tìm đến AI để chia sẻ cảm xúc khi mệt mỏi hoặc ngại mở lời. Hãy chú ý cân đối thời gian dùng AI và trò chuyện nhiều hơn với bạn bè, người thân.";
+      } else if (total <= 33) {
+        box.classList.add("lvl4");
+        tag.textContent = "Mức 4: Cao – Cảnh báo (28–33 điểm)";
+        desc.textContent =
+          "Mức độ gắn kết cảm xúc với AI đang ở ngưỡng cao, dễ dẫn đến thói quen né tránh giao tiếp trực tiếp hoặc hụt hẫng khi gián đoạn kết nối. Bạn nên đặt giới hạn giờ dùng AI và tham khảo phần cẩm nang bên dưới.";
+      } else {
+        box.classList.add("lvl5");
+        tag.textContent = "Mức 5: Rất cao – Lệ thuộc cảm xúc (34–40 điểm)";
+        desc.textContent =
+          "Bạn đang coi AI như chỗ dựa tinh thần chính và chịu ảnh hưởng rõ rệt khi thiếu kết nối. Hãy chủ động giảm dần việc tâm sự với AI, kết nối lại với gia đình, bạn bè hoặc tìm đến thầy cô / tổ tư vấn tâm lý học đường để được lắng nghe thực sự.";
+      }
+
+      box.style.display = "block";
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function resetQuiz() {
+      answers.fill(0);
+      updateLiveScore();
+      renderQuiz();
+      document.getElementById("resultBox").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
